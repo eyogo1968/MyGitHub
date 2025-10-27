@@ -1,0 +1,67 @@
+Accéder aux données dans Pivotal GemFire avec REST
+---------------------------------------------------
+
+Ce guide vous explique comment créer une application qui accède aux données stockées dans Apache Geode 
+via une interface RESTful basée sur l'hypermédia.
+
+Ce que vous allez créer
+-----------------------
+
+Vous allez créer une application Spring Web qui vous permettra de créer et de récupérer des objets Person 
+stockés dans la grille de données en mémoire (IMDG) Apache Geode à l'aide de Spring Data REST. 
+Spring Data REST combine automatiquement les fonctionnalités de Spring HATEOAS et Spring Data pour Apache Geode.
+
+Spring Data REST prend également en charge Spring Data JPA, Spring Data MongoDB et Spring Data Neo4j en tant que 
+magasins de données backend, mais ceux-ci ne font pas partie de ce guide.
+
+Pour obtenir des informations plus générales sur les concepts Apache Geode et l'accès aux données à partir 
+d'Apache Geode, consultez le guide Accéder aux données avec Apache Geode.
+
+Commencer avec Spring Initializr
+--------------------------------
+
+Pour toutes les applications Spring, vous devez commencer avec Spring Initializr. Spring Initializr offre un moyen
+rapide d'importer toutes les dépendances dont vous avez besoin pour une application et effectue une grande partie 
+de la configuration à votre place. Cet exemple nécessite la dépendance « Spring for Apache Geode ».
+
+Voici un exemple de fichier pom.xml lors de l'utilisation de Maven (copier le pom.xml)
+
+Créer un objet de domaine
+-------------------------
+
+Créer un nouvel objet de domaine pour représenter une personne.
+src/main/java/hello/Person.java (copier le code source)
+
+La personne a un prénom et un nom. Les objets de domaine Apache Geode ont besoin d'un identifiant, c'est pourquoi 
+un AtomicLong est utilisé pour incrémenter chaque création d'objet Person.
+
+Créer un référentiel Person
+---------------------------
+
+Ensuite, vous devez créer un référentiel simple pour conserver/accéder aux objets Person stockés dans Apache Geode.
+src/main/java/hello/PersonRepository.java  (copier le code source)
+
+Ce référentiel est une interface qui vous permettra d'effectuer diverses opérations d'accès aux données 
+(par exemple, des opérations CRUD de base et des requêtes simples) impliquant des objets Person. Il obtient ces 
+opérations en étendant CrudRepository.
+
+Au moment de l'exécution, Spring Data pour Apache Geode créera automatiquement une implémentation de cette 
+interface. Ensuite, Spring Data REST utilisera l'annotation @RepositoryRestResource pour demander à Spring MVC 
+de créer des points de terminaison REST-ful à l'adresse /people.
+
+@RepositoryRestResource n'est pas nécessaire pour qu'un référentiel soit exporté. Il est uniquement utilisé pour 
+modifier les détails de l'exportation, par exemple en utilisant /people au lieu de la valeur par défaut /persons.
+
+Ici, vous avez également défini une requête personnalisée pour récupérer une liste d'objets Person basée sur 
+lastName. Vous verrez comment l'invoquer plus loin dans ce guide.
+
+Rendre l'application exécutable
+-------------------------------
+
+Bien qu'il soit possible de packager ce service sous forme de fichier WAR traditionnel pour le déployer sur un 
+serveur d'applications externe, l'approche plus simple présentée ci-dessous consiste à créer une application 
+autonome. Vous packagiez tout dans un seul fichier JAR exécutable, piloté par une bonne vieille méthode Java 
+main(). Ce faisant, vous utilisez le support Spring pour intégrer le conteneur de servlets Tomcat comme runtime 
+HTTP, au lieu de déployer sur un conteneur de servlets externe.
+
+src/main/java/hello/Application.java (copier le code source)

@@ -1,0 +1,4 @@
+Nom : Alice
+Compte n° : 1
+Solde : 1500.0 €
+Généré le : 18/06/2025 23:32

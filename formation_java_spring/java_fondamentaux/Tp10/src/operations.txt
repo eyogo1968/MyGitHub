@@ -1,0 +1,7 @@
+1;debit;150.0
+2;credit;200.0
+3;debit;75.5
+4;credit;300.0
+5;virement;500.0
+6;debit;120.0
+7;credit;250.0
